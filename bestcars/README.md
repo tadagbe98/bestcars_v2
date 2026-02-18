@@ -57,3 +57,6 @@ Open http://127.0.0.1:8000
 3. Build Command: `bash build.sh`
 4. Start Command: `cd server && gunicorn djangoproj.wsgi`
 5. Add env var: `SECRET_KEY=your-secret-key`
+
+## Author : MASSOLOKONON Tadagbe Landry
+## Licence MIT
