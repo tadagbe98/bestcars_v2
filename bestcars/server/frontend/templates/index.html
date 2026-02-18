@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Best Cars Dealership</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root { --primary:#1a3c6e; --accent:#e63946; }
+    body { font-family:'Segoe UI',sans-serif; background:#f4f6f9; margin:0; }
+
+    /* NAVBAR */
+    .navbar { background:var(--primary)!important; padding:12px 24px; position:sticky; top:0; z-index:1000; box-shadow:0 2px 10px rgba(0,0,0,0.2); }
+    .navbar-brand { color:#fff!important; font-size:1.4rem; font-weight:700; }
+    .nav-link { color:rgba(255,255,255,0.85)!important; padding:6px 14px!important; border-radius:6px; transition:all .2s; }
+    .nav-link:hover,.nav-link.active { color:#ffd166!important; background:rgba(255,255,255,0.1)!important; }
+    .nav-username { color:#ffd166!important; font-weight:700; }
+
+    /* HERO */
+    .hero { background:linear-gradient(135deg,var(--primary) 55%,var(--accent)); color:#fff; padding:60px 30px; text-align:center; }
+    .hero h1 { font-size:2.5rem; font-weight:800; margin-bottom:10px; }
+    .hero p { font-size:1.1rem; opacity:.9; }
+
+    /* CARDS */
+    .dealer-card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,0.08); padding:22px; height:100%; transition:transform .25s,box-shadow .25s; border:1px solid #eee; }
+    .dealer-card:hover { transform:translateY(-5px); box-shadow:0 10px 30px rgba(0,0,0,0.14); }
+    .dealer-name { color:var(--primary); font-weight:700; font-size:1.05rem; margin:10px 0 6px; }
+    .review-card { background:#fff; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.07); padding:20px; margin-bottom:16px; border-left:4px solid #ddd; }
+    .review-card.positive { border-left-color:#28a745; }
+    .review-card.negative { border-left-color:#dc3545; }
+    .review-card.neutral { border-left-color:#6c757d; }
+
+    /* BADGES */
+    .badge-state { background:#eef2ff; color:var(--primary); padding:3px 10px; border-radius:20px; font-size:.78rem; font-weight:600; }
+    .badge-id { background:var(--primary); color:#fff; padding:3px 10px; border-radius:20px; font-size:.78rem; }
+    .s-positive { background:#d4edda; color:#155724; padding:4px 12px; border-radius:20px; font-size:.8rem; font-weight:600; }
+    .s-negative { background:#f8d7da; color:#721c24; padding:4px 12px; border-radius:20px; font-size:.8rem; font-weight:600; }
+    .s-neutral  { background:#e2e3e5; color:#383d41; padding:4px 12px; border-radius:20px; font-size:.8rem; font-weight:600; }
+
+    /* BUTTONS */
+    .btn-primary-custom { background:var(--primary); color:#fff; border:none; border-radius:8px; padding:8px 16px; font-size:.875rem; cursor:pointer; transition:background .2s; }
+    .btn-primary-custom:hover { background:#142d52; }
+    .btn-accent { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:8px 16px; font-size:.875rem; cursor:pointer; transition:background .2s; }
+    .btn-accent:hover { background:#c1121f; }
+
+    /* FORM */
+    .form-control:focus,.form-select:focus { border-color:var(--primary); box-shadow:0 0 0 .2rem rgba(26,60,110,.2); }
+    .section-card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,0.08); padding:28px; }
+
+    /* MODAL */
+    .modal-header { background:var(--primary); color:#fff; border-radius:12px 12px 0 0; }
+    .modal-header .btn-close { filter:invert(1); }
+
+    /* SPINNER */
+    .spinner-wrap { display:flex; justify-content:center; padding:50px; }
+    .spinner-border { color:var(--primary); }
+
+    /* FOOTER */
+    footer { background:var(--primary); color:#aab4c4; text-align:center; padding:24px; margin-top:60px; }
+    footer strong { color:#fff; }
+
+    /* SECTIONS */
+    .page-section { display:none; }
+    .page-section.active { display:block; }
+
+    /* INFO TABLE */
+    .info-table td { padding:6px 12px; font-size:.9rem; }
+    .info-table td:first-child { font-weight:600; color:#555; width:130px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ NAVBAR ══════════════ -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" onclick="showSection('home')">
+      <i class="fas fa-car me-2"></i>Best Cars Dealership
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-center gap-1">
+        <li><a class="nav-link" href="/static/About.html">About Us</a></li>
+        <li><a class="nav-link" href="/static/Contact.html">Contact Us</a></li>
+        <li id="nav-user" style="display:none">
+          <span class="nav-link nav-username"><i class="fas fa-user me-1"></i><span id="nav-username-text"></span></span>
+        </li>
+        <li id="nav-btn-login">
+          <button class="btn btn-outline-light btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <i class="fas fa-sign-in-alt me-1"></i>Login
+          </button>
+        </li>
+        <li id="nav-btn-register">
+          <button class="btn btn-sm ms-1" style="background:var(--accent);color:#fff" data-bs-toggle="modal" data-bs-target="#registerModal">
+            <i class="fas fa-user-plus me-1"></i>Register
+          </button>
+        </li>
+        <li id="nav-btn-logout" style="display:none">
+          <button class="btn btn-outline-light btn-sm ms-2" onclick="doLogout()">
+            <i class="fas fa-sign-out-alt me-1"></i>Logout
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════ HOME — DEALERS LIST ══════════════ -->
+<div id="section-home" class="page-section active">
+  <div class="hero">
+    <h1><i class="fas fa-car me-2"></i>Car Dealerships</h1>
+    <p>Find trusted dealerships across the United States</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white border-bottom py-3 px-4">
+    <div class="d-flex flex-wrap gap-3 align-items-center">
+      <input type="text" id="search-input" class="form-control" style="max-width:260px"
+        placeholder="🔍 Search by name or city..." oninput="filterDealers()"/>
+      <select id="state-select" class="form-select" style="max-width:200px" onchange="onStateChange()">
+        <option value="All">All States</option>
+        <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option>
+        <option>California</option><option>Colorado</option><option>Connecticut</option>
+        <option>Delaware</option><option>Florida</option><option>Georgia</option>
+        <option>Hawaii</option><option>Idaho</option><option>Illinois</option>
+        <option>Indiana</option><option>Iowa</option><option>Kansas</option>
+        <option>Kentucky</option><option>Louisiana</option><option>Maine</option>
+        <option>Maryland</option><option>Massachusetts</option><option>Michigan</option>
+        <option>Minnesota</option><option>Mississippi</option><option>Missouri</option>
+        <option>Montana</option><option>Nebraska</option><option>Nevada</option>
+        <option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option>
+        <option>New York</option><option>North Carolina</option><option>North Dakota</option>
+        <option>Ohio</option><option>Oklahoma</option><option>Oregon</option>
+        <option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option>
+        <option>South Dakota</option><option>Tennessee</option><option>Texas</option>
+        <option>Utah</option><option>Vermont</option><option>Virginia</option>
+        <option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+      </select>
+      <div id="loggedin-badge" style="display:none" class="text-success fw-semibold small">
+        ✅ Logged in as: <strong id="loggedin-name"></strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid px-4 py-4">
+    <div id="dealers-spinner" class="spinner-wrap"><div class="spinner-border" role="status"></div></div>
+    <div id="dealers-grid" class="row g-3" style="display:none"></div>
+    <div id="dealers-empty" class="text-center py-5 text-muted" style="display:none">
+      <i class="fas fa-search fa-3x mb-3"></i>
+      <h5>No dealers found</h5><p>Try adjusting your filters</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ DEALER DETAIL ══════════════ -->
+<div id="section-dealer" class="page-section">
+  <div class="hero">
+    <h1 id="d-name">Dealer</h1>
+    <p id="d-location"></p>
+  </div>
+  <div class="container py-4" style="max-width:900px">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+      <button class="btn btn-outline-secondary" onclick="showSection('home')">
+        <i class="fas fa-arrow-left me-1"></i>All Dealers
+      </button>
+      <div id="write-review-wrap"></div>
+    </div>
+
+    <!-- Dealer info -->
+    <div class="section-card mb-4" id="dealer-info-box"></div>
+
+    <!-- Reviews -->
+    <h4 class="fw-bold mb-3" style="color:var(--primary)">
+      <i class="fas fa-comments me-2"></i>Customer Reviews
+      <span id="review-badge" class="badge bg-secondary ms-2"></span>
+    </h4>
+    <div id="reviews-spinner" class="spinner-wrap" style="display:none"><div class="spinner-border"></div></div>
+    <div id="reviews-container"></div>
+  </div>
+</div>
+
+<!-- ══════════════ POST REVIEW ══════════════ -->
+<div id="section-review" class="page-section">
+  <div class="hero">
+    <h1><i class="fas fa-pen me-2"></i>Write a Review</h1>
+    <p id="review-dealer-name-hero"></p>
+  </div>
+  <div class="container py-4" style="max-width:680px">
+    <button class="btn btn-outline-secondary mb-4" id="back-to-dealer-btn">
+      <i class="fas fa-arrow-left me-1"></i>Back to Dealer
+    </button>
+    <div class="section-card">
+      <h5 class="fw-bold mb-1" style="color:var(--primary)">Share Your Experience</h5>
+      <p class="text-muted small mb-4">Posting as: <strong id="posting-as-label"></strong></p>
+      <div id="review-success" class="alert alert-success" style="display:none">
+        <i class="fas fa-check-circle me-2"></i>Review submitted successfully! Redirecting...
+      </div>
+      <form id="review-form">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Your Review *</label>
+          <textarea id="review-text" class="form-control" rows="5"
+            placeholder="Describe your experience with this dealership..." required></textarea>
+        </div>
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="purchased-chk" onchange="togglePurchaseDate()">
+            <label class="form-check-label fw-semibold" for="purchased-chk">I purchased a vehicle here</label>
+          </div>
+        </div>
+        <div class="mb-3" id="purchase-date-wrap" style="display:none">
+          <label class="form-label fw-semibold">Purchase Date</label>
+          <input type="date" id="purchase-date" class="form-control"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Car Make</label>
+          <select id="car-make" class="form-select" onchange="updateModels()">
+            <option value="">-- Select Make --</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Car Model</label>
+          <select id="car-model" class="form-select" disabled>
+            <option value="">-- Select Model --</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Year</label>
+          <select id="car-year" class="form-select">
+            <option>2023</option><option>2022</option><option>2021</option>
+            <option>2020</option><option>2019</option><option>2018</option>
+            <option>2017</option><option>2016</option><option>2015</option>
+          </select>
+        </div>
+        <button type="submit" class="btn w-100 py-3 fw-bold" style="background:var(--primary);color:#fff;font-size:1rem;border-radius:10px;">
+          <i class="fas fa-paper-plane me-2"></i>Submit Review
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p class="mb-0"><strong>🚗 Best Cars Dealership</strong> &copy; 2024 — All rights reserved.</p>
+</footer>
+
+<!-- ══════════════ LOGIN MODAL ══════════════ -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:14px;overflow:hidden">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold"><i class="fas fa-key me-2"></i>Sign In</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="login-err" class="alert alert-danger py-2" style="display:none"></div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Username</label>
+          <input type="text" id="l-user" class="form-control" placeholder="Your username"/>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Password</label>
+          <input type="password" id="l-pass" class="form-control" placeholder="Your password"
+            onkeydown="if(event.key==='Enter') doLogin()"/>
+        </div>
+        <button class="btn w-100 py-2 fw-bold" style="background:var(--primary);color:#fff;border-radius:8px" onclick="doLogin()">
+          Sign In
+        </button>
+        <p class="text-center mt-3 text-muted small mb-0">
+          No account?
+          <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#registerModal" style="color:var(--primary)">Register here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ REGISTER MODAL ══════════════ -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:14px;overflow:hidden">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold"><i class="fas fa-user-plus me-2"></i>Create Account</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="reg-err" class="alert alert-danger py-2" style="display:none"></div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Username *</label>
+          <input type="text" id="r-user" class="form-control" placeholder="Choose a username"/>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col">
+            <label class="form-label fw-semibold">First Name *</label>
+            <input type="text" id="r-first" class="form-control" placeholder="First name"/>
+          </div>
+          <div class="col">
+            <label class="form-label fw-semibold">Last Name *</label>
+            <input type="text" id="r-last" class="form-control" placeholder="Last name"/>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Email *</label>
+          <input type="email" id="r-email" class="form-control" placeholder="your@email.com"/>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Password *</label>
+          <input type="password" id="r-pass" class="form-control" placeholder="At least 6 characters"/>
+        </div>
+        <button class="btn w-100 py-2 fw-bold" style="background:var(--primary);color:#fff;border-radius:8px" onclick="doRegister()">
+          Register
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════
+let allDealers = [];
+let allCarModels = [];
+let currentDealerId = null;
+let isLoggedIn = false;
+let currentUser = '';
+let currentFirstName = '';
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const u = sessionStorage.getItem('username');
+  if (u) {
+    isLoggedIn = true;
+    currentUser = u;
+    currentFirstName = sessionStorage.getItem('firstname') || u;
+    updateAuthUI();
+  }
+  loadDealers('All');
+
+  document.getElementById('review-form').addEventListener('submit', submitReview);
+});
+
+// ════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════
+function showSection(name) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ════════════════════════════════════════════
+//  AUTH UI
+// ════════════════════════════════════════════
+function updateAuthUI() {
+  document.getElementById('nav-btn-login').style.display   = isLoggedIn ? 'none' : '';
+  document.getElementById('nav-btn-register').style.display = isLoggedIn ? 'none' : '';
+  document.getElementById('nav-btn-logout').style.display  = isLoggedIn ? '' : 'none';
+  document.getElementById('nav-user').style.display        = isLoggedIn ? '' : 'none';
+  document.getElementById('nav-username-text').textContent  = currentFirstName || currentUser;
+  document.getElementById('loggedin-badge').style.display   = isLoggedIn ? '' : 'none';
+  document.getElementById('loggedin-name').textContent      = currentUser;
+}
+
+// ════════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════════
+async function doLogin() {
+  const err = document.getElementById('login-err');
+  err.style.display = 'none';
+  const username = document.getElementById('l-user').value.trim();
+  const password = document.getElementById('l-pass').value;
+  if (!username || !password) { err.textContent='Fill all fields'; err.style.display=''; return; }
+  try {
+    const res = await fetch('/djangoapp/login', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({userName: username, password})
+    });
+    const data = await res.json();
+    if (data.status === 'Authenticated') {
+      isLoggedIn = true;
+      currentUser = data.userName;
+      currentFirstName = data.firstName || data.userName;
+      sessionStorage.setItem('username', currentUser);
+      sessionStorage.setItem('firstname', currentFirstName);
+      bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+      updateAuthUI();
+      renderDealers(allDealers);
+    } else {
+      err.textContent = 'Invalid username or password.';
+      err.style.display = '';
+    }
+  } catch(e) { err.textContent='Connection error. Is the server running?'; err.style.display=''; }
+}
+
+// ════════════════════════════════════════════
+//  REGISTER
+// ════════════════════════════════════════════
+async function doRegister() {
+  const err = document.getElementById('reg-err');
+  err.style.display = 'none';
+  const payload = {
+    userName:  document.getElementById('r-user').value.trim(),
+    firstName: document.getElementById('r-first').value.trim(),
+    lastName:  document.getElementById('r-last').value.trim(),
+    email:     document.getElementById('r-email').value.trim(),
+    password:  document.getElementById('r-pass').value,
+  };
+  if (!payload.userName || !payload.password) { err.textContent='Username and password required'; err.style.display=''; return; }
+  try {
+    const res = await fetch('/djangoapp/register', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.status === 'Authenticated') {
+      isLoggedIn = true;
+      currentUser = data.userName;
+      currentFirstName = data.firstName || data.userName;
+      sessionStorage.setItem('username', currentUser);
+      sessionStorage.setItem('firstname', currentFirstName);
+      bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
+      updateAuthUI();
+      renderDealers(allDealers);
+    } else if (data.error === 'Already Registered') {
+      err.textContent = 'Username already taken. Choose another.';
+      err.style.display = '';
+    } else {
+      err.textContent = data.message || 'Registration failed.';
+      err.style.display = '';
+    }
+  } catch(e) { err.textContent='Connection error.'; err.style.display=''; }
+}
+
+// ════════════════════════════════════════════
+//  LOGOUT
+// ════════════════════════════════════════════
+async function doLogout() {
+  try { await fetch('/djangoapp/logout', {credentials:'include'}); } catch(e) {}
+  isLoggedIn = false; currentUser = ''; currentFirstName = '';
+  sessionStorage.clear();
+  updateAuthUI();
+  showSection('home');
+  renderDealers(allDealers);
+}
+
+// ════════════════════════════════════════════
+//  DEALERS
+// ════════════════════════════════════════════
+async function loadDealers(state) {
+  document.getElementById('dealers-spinner').style.display = '';
+  document.getElementById('dealers-grid').style.display = 'none';
+  document.getElementById('dealers-empty').style.display = 'none';
+
+  const url = state === 'All' ? '/djangoapp/get_dealers' : `/djangoapp/get_dealers/${encodeURIComponent(state)}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    allDealers = data.dealers || [];
+  } catch(e) {
+    allDealers = [];
+    console.error('Error loading dealers:', e);
+  }
+  document.getElementById('dealers-spinner').style.display = 'none';
+  renderDealers(allDealers);
+}
+
+function renderDealers(dealers) {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const filtered = dealers.filter(d =>
+    (d.full_name||'').toLowerCase().includes(search) ||
+    (d.city||'').toLowerCase().includes(search) ||
+    (d.state||'').toLowerCase().includes(search)
+  );
+
+  const grid = document.getElementById('dealers-grid');
+  const empty = document.getElementById('dealers-empty');
+
+  if (!filtered.length) {
+    grid.style.display = 'none'; empty.style.display = ''; return;
+  }
+  empty.style.display = 'none'; grid.style.display = '';
+
+  grid.innerHTML = filtered.map(d => `
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+      <div class="dealer-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="badge-id">ID: ${d.id}</span>
+          <span class="badge-state">${d.st}</span>
+        </div>
+        <div class="dealer-name">${d.full_name}</div>
+        <p class="text-muted mb-1" style="font-size:.875rem">
+          <i class="fas fa-map-marker-alt me-1" style="color:var(--accent)"></i>${d.city}, ${d.state}
+        </p>
+        <p class="text-muted mb-3" style="font-size:.8rem">${d.address}, ${d.zip}</p>
+        <div class="d-flex gap-2">
+          <button class="btn-primary-custom flex-fill" onclick="openDealer(${d.id})">
+            <i class="fas fa-eye me-1"></i>View Reviews
+          </button>
+          ${isLoggedIn ? `
+          <button class="btn-accent flex-fill" onclick="openPostReview(${d.id}, '${d.full_name.replace(/'/g,"\\'")}')">
+            <i class="fas fa-pen me-1"></i>Review Dealer
+          </button>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterDealers() { renderDealers(allDealers); }
+
+function onStateChange() {
+  const state = document.getElementById('state-select').value;
+  loadDealers(state);
+}
+
+// ════════════════════════════════════════════
+//  DEALER DETAIL + REVIEWS
+// ════════════════════════════════════════════
+async function openDealer(id) {
+  currentDealerId = id;
+  showSection('dealer');
+  document.getElementById('dealer-info-box').innerHTML = '<div class="spinner-wrap"><div class="spinner-border"></div></div>';
+  document.getElementById('reviews-container').innerHTML = '';
+  document.getElementById('reviews-spinner').style.display = '';
+  document.getElementById('review-badge').textContent = '';
+
+  try {
+    const [dRes, rRes] = await Promise.all([
+      fetch(`/djangoapp/dealer/${id}`),
+      fetch(`/djangoapp/reviews/dealer/${id}`)
+    ]);
+    const dData = await dRes.json();
+    const rData = await rRes.json();
+
+    const dealer  = dData.dealer  || {};
+    const reviews = rData.reviews || [];
+
+    // Header
+    document.getElementById('d-name').textContent = dealer.full_name || `Dealer #${id}`;
+    document.getElementById('d-location').textContent =
+      `📍 ${dealer.city || ''}, ${dealer.state || ''}  —  ${dealer.address || ''}`;
+
+    // Info box
+    document.getElementById('dealer-info-box').innerHTML = `
+      <h5 class="fw-bold mb-3" style="color:var(--primary)"><i class="fas fa-building me-2"></i>Dealer Information</h5>
+      <table class="info-table">
+        <tr><td>Full Name</td><td>${dealer.full_name || ''}</td></tr>
+        <tr><td>Short Name</td><td>${dealer.short_name || ''}</td></tr>
+        <tr><td>City</td><td>${dealer.city || ''}</td></tr>
+        <tr><td>State</td><td>${dealer.state || ''} (${dealer.st || ''})</td></tr>
+        <tr><td>Address</td><td>${dealer.address || ''}</td></tr>
+        <tr><td>Zip Code</td><td>${dealer.zip || ''}</td></tr>
+      </table>
+    `;
+
+    // Write review button
+    const wrap = document.getElementById('write-review-wrap');
+    if (isLoggedIn) {
+      wrap.innerHTML = `<button class="btn-accent" onclick="openPostReview(${id}, '${(dealer.full_name||'').replace(/'/g,"\\'")}')">
+        <i class="fas fa-pen me-1"></i>Write a Review</button>`;
+    } else {
+      wrap.innerHTML = `<span class="text-muted small">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" style="color:var(--primary)">Login</a>
+        to post a review</span>`;
+    }
+
+    // Reviews
+    document.getElementById('reviews-spinner').style.display = 'none';
+    document.getElementById('review-badge').textContent = reviews.length;
+
+    if (!reviews.length) {
+      document.getElementById('reviews-container').innerHTML = `
+        <div class="section-card text-center py-5 text-muted">
+          <i class="fas fa-comment-slash fa-3x mb-3"></i>
+          <h5>No reviews yet</h5>
+          <p>Be the first to review this dealership!</p>
+          ${isLoggedIn ? `<button class="btn-primary-custom mt-2" onclick="openPostReview(${id},'${(dealer.full_name||'').replace(/'/g,"\\'")}')">Write First Review</button>` : ''}
+        </div>`;
+    } else {
+      document.getElementById('reviews-container').innerHTML = reviews.map(r => `
+        <div class="review-card ${r.sentiment||'neutral'}">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+            <div>
+              <strong style="color:var(--primary)">${r.name || 'Anonymous'}</strong>
+              ${r.purchase ? '<span class="badge bg-success ms-2 small">✅ Verified Purchase</span>' : ''}
+            </div>
+            <span class="s-${r.sentiment||'neutral'}">
+              ${{positive:'😊 Positive', negative:'😞 Negative', neutral:'😐 Neutral'}[r.sentiment||'neutral']}
+            </span>
+          </div>
+          <p class="mb-2" style="line-height:1.6">"${r.review || ''}"</p>
+          ${r.car_make || r.car_model ? `
+          <div class="bg-light rounded p-2 small text-muted">
+            <i class="fas fa-car me-1"></i>
+            ${r.car_year||''} ${r.car_make||''} ${r.car_model||''}
+            ${r.purchase_date ? `— Purchased: ${r.purchase_date}` : ''}
+          </div>` : ''}
+        </div>
+      `).join('');
+    }
+  } catch(e) {
+    document.getElementById('reviews-spinner').style.display = 'none';
+    document.getElementById('dealer-info-box').innerHTML = '<div class="alert alert-danger">Error loading dealer data.</div>';
+    console.error(e);
+  }
+}
+
+// ════════════════════════════════════════════
+//  POST REVIEW
+// ════════════════════════════════════════════
+async function openPostReview(dealerId, dealerName) {
+  if (!isLoggedIn) {
+    new bootstrap.Modal(document.getElementById('loginModal')).show(); return;
+  }
+  currentDealerId = dealerId;
+  showSection('review');
+  document.getElementById('review-dealer-name-hero').textContent = dealerName;
+  document.getElementById('posting-as-label').textContent = `${currentFirstName || currentUser} (${currentUser})`;
+  document.getElementById('review-success').style.display = 'none';
+  document.getElementById('review-form').style.display = '';
+  document.getElementById('review-text').value = '';
+  document.getElementById('purchased-chk').checked = false;
+  document.getElementById('purchase-date-wrap').style.display = 'none';
+  document.getElementById('back-to-dealer-btn').onclick = () => openDealer(dealerId);
+
+  // Load cars
+  if (!allCarModels.length) {
+    try {
+      const res = await fetch('/djangoapp/get_cars');
+      const data = await res.json();
+      allCarModels = data.CarModels || [];
+    } catch(e) { console.error(e); }
+  }
+
+  const makes = [...new Set(allCarModels.map(c => c.CarMake))].sort();
+  const makeSelect = document.getElementById('car-make');
+  makeSelect.innerHTML = '<option value="">-- Select Make --</option>' + makes.map(m => `<option>${m}</option>`).join('');
+  document.getElementById('car-model').innerHTML = '<option value="">-- Select Model --</option>';
+  document.getElementById('car-model').disabled = true;
+}
+
+function updateModels() {
+  const make = document.getElementById('car-make').value;
+  const modelSelect = document.getElementById('car-model');
+  if (!make) { modelSelect.disabled = true; modelSelect.innerHTML = '<option value="">-- Select Model --</option>'; return; }
+  const models = allCarModels.filter(c => c.CarMake === make).map(c => c.CarModel).sort();
+  modelSelect.innerHTML = '<option value="">-- Select Model --</option>' + models.map(m => `<option>${m}</option>`).join('');
+  modelSelect.disabled = false;
+}
+
+function togglePurchaseDate() {
+  document.getElementById('purchase-date-wrap').style.display =
+    document.getElementById('purchased-chk').checked ? '' : 'none';
+}
+
+async function submitReview(e) {
+  e.preventDefault();
+  const payload = {
+    dealership:    currentDealerId,
+    review:        document.getElementById('review-text').value,
+    purchase:      document.getElementById('purchased-chk').checked,
+    purchase_date: document.getElementById('purchase-date').value,
+    car_make:      document.getElementById('car-make').value,
+    car_model:     document.getElementById('car-model').value,
+    car_year:      document.getElementById('car-year').value,
+  };
+  try {
+    const res = await fetch('/djangoapp/add_review', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.status === 200) {
+      document.getElementById('review-success').style.display = '';
+      document.getElementById('review-form').style.display = 'none';
+      setTimeout(() => openDealer(currentDealerId), 2000);
+    } else {
+      alert('Error: ' + (data.message || 'Could not submit review.'));
+    }
+  } catch(e) { alert('Connection error.'); }
+}
+</script>
+</body>
+</html>
