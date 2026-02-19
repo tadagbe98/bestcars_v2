@@ -4,6 +4,9 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ─────────────────────────────────────────────────────
+# Security
+# ─────────────────────────────────────────────────────
 SECRET_KEY = os.environ.get(
     "SECRET_KEY",
     "django-insecure-bestcars-key-change-in-prod-2024"
@@ -70,19 +73,19 @@ TEMPLATES = [
 ]
 
 # ─────────────────────────────────────────────────────
-# Database (PostgreSQL Render ou SQLite local)
+# Database (SQLite local / PostgreSQL Render)
 # ─────────────────────────────────────────────────────
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
-if DATABASE_URL:
+if "RENDER" in os.environ:
+    # PostgreSQL sur Render
     DATABASES = {
         "default": dj_database_url.parse(
-            DATABASE_URL,
+            os.environ.get("DATABASE_URL"),
             conn_max_age=600,
-            ssl_require=True,
+            ssl_require=True
         )
     }
 else:
+    # SQLite en local
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -96,10 +99,7 @@ else:
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "frontend" / "static"]
-
-STATICFILES_STORAGE = (
-    "whitenoise.storage.CompressedManifestStaticFilesStorage"
-)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ─────────────────────────────────────────────────────
 # CORS
@@ -124,6 +124,9 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# ─────────────────────────────────────────────────────
+# Password validation
+# ─────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
