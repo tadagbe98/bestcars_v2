@@ -101,10 +101,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 ```
 
----
-
-N'oublie pas de mettre à jour `requirements.txt` aussi :
-```
 Django==4.2.7
 djangorestframework==3.14.0
 django-cors-headers==4.3.1
