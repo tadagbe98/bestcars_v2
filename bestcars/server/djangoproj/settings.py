@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,30 +53,43 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djangoproj.wsgi.application'
 
-# ─── Database ───────────────────────────────────────────────────────────────
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# ─── Database ────────────────────────────────────────────────────────────────
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
-# ─── Static files ───────────────────────────────────────────────────────────
+if DATABASE_URL:
+    # PostgreSQL sur Render
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+else:
+    # SQLite en local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+# ─── Static files ────────────────────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'frontend' / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# ─── CORS ────────────────────────────────────────────────────────────────────
+# ─── CORS ─────────────────────────────────────────────────────────────────────
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# ─── Sessions ────────────────────────────────────────────────────────────────
+# ─── Sessions ─────────────────────────────────────────────────────────────────
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_AGE = 86400
 
-# ─── Misc ────────────────────────────────────────────────────────────────────
+# ─── Misc ─────────────────────────────────────────────────────────────────────
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -85,3 +99,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
 ]
+```
+
+---
+
+N'oublie pas de mettre à jour `requirements.txt` aussi :
+```
+Django==4.2.7
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+requests==2.31.0
+whitenoise==6.6.0
+gunicorn==21.2.0
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
